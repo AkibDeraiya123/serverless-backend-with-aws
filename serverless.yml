@@ -3,8 +3,8 @@ service: serverless-rest-api
 provider:
   name: aws
   runtime: nodejs6.10
-  stage: dev
-  profile: main
+  # stage: dev
+  profile: default
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -22,23 +22,30 @@ functions:
     handler: src/crud.creat
     events: 
       - http:
-          path: src
+          path: users/add
           method: post
           cors: true
   get:
     handler: src/crud.get
     events: 
       - http:
-          path: src
+          path: users/get
+          method: get
+          cors: true
+  getDemo:
+    handler: handler.hello
+    events: 
+      - http:
+          path: demo
           method: get
           cors: true
 
 resources:
  Resources:
     UserDynamoDbTable:
-     Type: 'AWS::DynamoDB::Table'
-     DeletionPolicy: Retain
-     Properties:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
         AttributeDefinitions:
           -
             AttributeName: id

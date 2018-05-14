@@ -1,21 +1,21 @@
 'use strict';
 const uuid = require('uuid');
 const AWS = require('aws-sdk');
-const Helper = require('./password-help');
-const dynamoDb = new AWS.DynamoDb.DocumentClient();
+// const Helper = require('./password-help');
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const timeStamp = new Date().getTime();
 
 module.exports = {
 	creat: function (event, context, callback) {
-		const data = Json.parse(event.body);
+		const data = JSON.parse(event.body);
 
 		const params = {
 			TableName: 'user',
 			Item: {
-				id: uuid.v3(),
+				// id: uuid.v1(),
 				name: data.name,
 				email: data.email,
-				password: Helper.createHash(data.password),
+				password: data.password,
 				createdAt: timeStamp,
 				updatedAt: timeStamp,
 			}
@@ -30,7 +30,7 @@ module.exports = {
 				callback(null, {
 					statusCode: 200,
 					message: 'Created successfully',
-					data: Json.stringify(response.Item)
+					// data: JSON.stringify(response.Item)
 				});
 			}
 		})
@@ -48,7 +48,7 @@ module.exports = {
 			} else {
 				const response = {
 					statusCode: 200,
-					body: Json.stringify(result)
+					body: JSON.stringify(result)
 				};
 				callback(null, response)
 			}
