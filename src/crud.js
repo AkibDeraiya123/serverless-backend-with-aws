@@ -23,17 +23,35 @@ module.exports = {
 
 		dynamoDb.put(params, (err, response) => {
 			if (err) {
-				callback({
-					status: false,
-					message: 'Something went wrong. Please try again'
-				}, null);
+				console.error(error);
+				callback(new Error('Something went wrong. Please try again'));
+				return;
 			} else {
 				callback(null, {
-					status: true,
+					statusCode: 200,
 					message: 'Created successfully',
 					data: Json.stringify(response.Item)
 				});
 			}
 		})
-	}
+	},
+	get: function (event, context, callback) {
+		const params = {	
+			TableName: 'user',
+		};
+
+		dynamoDb.scan(params, (error, result) => {
+			if(error) {
+				console.error(error);
+				callback(new Error('Can not fetch records'));
+				return;
+			} else {
+				const response = {
+					statusCode: 200,
+					body: Json.stringify(result)
+				};
+				callback(null, response)
+			}
+		})
+	},
 }

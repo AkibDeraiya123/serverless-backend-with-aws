@@ -4,7 +4,7 @@ provider:
   name: aws
   runtime: nodejs6.10
   stage: dev
-  profile: default
+  profile: main
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -24,6 +24,13 @@ functions:
       - http:
           path: src
           method: post
+          cors: true
+  get:
+    handler: src/crud.get
+    events: 
+      - http:
+          path: src
+          method: get
           cors: true
 
 resources:
