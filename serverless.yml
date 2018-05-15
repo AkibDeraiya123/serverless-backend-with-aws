@@ -32,6 +32,27 @@ functions:
           path: users/get
           method: get
           cors: true
+  getSingleRecord:
+    handler: src/crud.singleRecord
+    events: 
+      - http:
+          path: users/getSingleRecord/{id}
+          method: get
+          cors: true
+  delete:
+    handler: src/crud.delete
+    events: 
+      - http:
+          path: users/delete/{id}
+          method: delete
+          cors: true
+  update:
+    handler: src/crud.update
+    events: 
+      - http:
+          path: users/update/{id}
+          method: put
+          cors: true
   getDemo:
     handler: handler.hello
     events: 

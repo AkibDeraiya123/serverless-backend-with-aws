@@ -12,8 +12,8 @@ module.exports = {
 		const params = {
 			TableName: 'user',
 			Item: {
-				// id: uuid.v1(),
-				name: data.name,
+				id: uuid.v1(),
+				fullname: data.name,
 				email: data.email,
 				password: data.password,
 				createdAt: timeStamp,
@@ -21,22 +21,24 @@ module.exports = {
 			}
 		};
 
-		dynamoDb.put(params, (err, response) => {
+		dynamoDb.put(params, (err, result) => {
 			if (err) {
-				console.error(error);
+				console.error(err);
 				callback(new Error('Something went wrong. Please try again'));
 				return;
 			} else {
-				callback(null, {
+				const response = {
 					statusCode: 200,
-					message: 'Created successfully',
-					// data: JSON.stringify(response.Item)
-				});
+					body: JSON.stringify({
+						message: 'User added successfully'
+					})
+				};
+				callback(null, response);
 			}
 		})
 	},
 	get: function (event, context, callback) {
-		const params = {	
+		const params = {
 			TableName: 'user',
 		};
 
@@ -50,8 +52,84 @@ module.exports = {
 					statusCode: 200,
 					body: JSON.stringify(result)
 				};
-				callback(null, response)
+				callback(null, response);
 			}
 		})
 	},
+	delete: function(event, context, callback) {
+		const params = {
+			TableName: 'user',
+			Key: {
+				id: event.pathParameters.id
+			}
+		};
+
+		dynamoDb.delete(params, (err, result) => {
+			if (err) {
+				console.error(err);
+				callback(new Error('Could not remove this record. Please try again'));
+				return;
+			} else {
+				const response = {
+					statusCode: 200,
+					body: JSON.stringify({
+						message: 'User deleted successfully'
+					})
+				};
+				callback(null, response);
+			}
+		})
+	},
+	singleRecord: function(event, context, callback) {
+		const params = {
+			TableName: 'user',
+			Key: {
+				id: event.pathParameters.id
+			}
+		};
+
+		dynamoDb.get(params, (err, result) => {
+			if (err) {
+				console.error(err);
+				callback(new Error('Could not fetch this record. Please try again'));
+				return;
+			} else {
+				const response = {
+					statusCode: 200,
+					body: JSON.stringify(result)
+				};
+				callback(null, response);
+			}
+		})
+	},
+	update: function(event, context, callback) {
+		const data = JSON.parse(event.body);
+		 
+		const params = {
+			TableName: 'user',
+			Key: {
+				"id": event.pathParameters.id
+			},
+		    UpdateExpression: 'SET email = :value1, fullname = :value2',
+		    ExpressionAttributeValues: {
+		      ':value1': data.email,
+		      ':value2': data.name
+		    },
+		    ReturnValues:"UPDATED_NEW"
+		};
+
+		dynamoDb.update(params, function(err, result) {
+			if (err) {
+				console.error(err);
+				callback(new Error('Could not fetch this record. Please try again'));
+				return;
+			} else {
+				const response = {
+					statusCode: 200,
+					body: JSON.stringify(result)
+				};
+				callback(null, response);
+			}
+		})
+	}
 }
