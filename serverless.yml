@@ -22,7 +22,14 @@ functions:
     handler: src/crud.creat
     events: 
       - http:
-          path: users/add
+          path: users/creat
+          method: post
+          cors: true
+  login:
+    handler: src/crud.login
+    events:
+      - http:
+          path: login
           method: post
           cors: true
   get:

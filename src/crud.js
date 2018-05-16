@@ -37,6 +37,42 @@ module.exports = {
 			}
 		})
 	},
+	login: function (event, context, callback) {
+		const data = JSON.parse(event.body);
+		
+		const params = {
+			TableName: 'user',
+			Key: {
+				"email": data.email
+			}
+		};
+
+		dynamoDb.get(params, (error, result) => {
+			if(error) {
+				console.error(error);
+				callback(new Error('Something went wrong. Please try again'));
+				return;
+			} else {
+				let response = {};
+				if (result.length > 0) {
+					response = {
+						statusCode: 200,
+						body: JSON.stringify({
+							message: 'Email not found'
+						})
+					};
+				} else {
+					response = {
+						statusCode: 200,
+						body: JSON.stringify({
+							message: 'Email found'
+						})
+					};
+				}
+				callback(null, response);
+			}
+		})
+	},
 	get: function (event, context, callback) {
 		const params = {
 			TableName: 'user',
