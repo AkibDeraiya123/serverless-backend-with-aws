@@ -67,6 +67,13 @@ functions:
           path: demo
           method: get
           cors: true
+  sendEmail:
+    handler: src/crud.sendEmailWithSESSMTP
+    events: 
+      - http:
+          path: email
+          method: get
+          cors: true
 
 resources:
  Resources:

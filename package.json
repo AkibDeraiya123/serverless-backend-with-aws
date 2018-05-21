@@ -3,6 +3,8 @@
 	"dependencies": {
 		"aws-sdk": "^2.238.1",
 		"bcrypt": "^2.0.1",
+		"nodemailer": "^4.6.4",
+		"nodemailer-smtp-transport": "^2.7.4",
 		"serverless-dynamodb-local": "^0.2.30",
 		"uuid": "^3.2.1"
 	}

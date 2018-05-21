@@ -167,5 +167,42 @@ module.exports = {
 				callback(null, response);
 			}
 		})
+	},
+	sendEmailWithSESSMTP: function (event, context, callback) {
+		var targetEmail = 'target email address will goes here';
+		var fromEmail = 'from email address will goes here';
+		// var bccEmail = '{BCC_EMAIL_ADDRESS-TO_VERIFY}'
+		var sesAccessKey = 'AWS AccessKey'
+		var sesSecretKey = 'AWS SecretKey'
+		
+		var nodemailer = require('nodemailer');
+		var smtpTransport = require('nodemailer-smtp-transport');
+
+		var transporter = nodemailer.createTransport(smtpTransport({
+		    host: 'email-smtp.us-east-1.amazonaws.com',
+		    port: 587,
+		    auth: {
+		        user: sesAccessKey,
+		        pass: sesSecretKey
+		    }
+		}));
+
+		var text = 'Test E-mail address';
+
+		var mailOptions = {
+		    from: fromEmail,
+		    to: targetEmail,
+		    // bcc: bccEmail,
+		    subject: 'Invoice',
+		    text: text 
+		};
+			
+		transporter.sendMail(mailOptions, function(error, info){
+          	if(error){
+    	      	console.log(error);
+          	}
+
+          	context.done(null, 'Completed')
+      	});
 	}
 }
